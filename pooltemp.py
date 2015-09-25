@@ -11,6 +11,7 @@ db = SQLAlchemy(app)
 
 class Meas(db.Model):
     id = Column(Integer, primary_key=True)
+    taken = Column(DateTime, unique=False)
     h2o_temp = Column(Float, unique=False)
     air_temp = Column(Float, unique=False)
     humidity = Column(Float, unique=False)
@@ -20,7 +21,6 @@ class Meas(db.Model):
 
 api_manager = APIManager(app, flask_sqlalchemy_db=db)
 api_manager.create_api(Meas, methods=['GET', 'POST', 'DELETE', 'PUT'])
-
 
 
 @app.route('/')
