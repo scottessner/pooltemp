@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>Pool Temperature Monitor</title>
 </head>
-<body ng-app="app" ng-controller="MeasCtrl as meas">
+<body ng-app="app" ng-controller="MeasController as meas">
     <div ng-repeat="m in meas.meas">
-        {{ m.h2o_temp }}
+        Title: {{ m.h2o_temp }}
     </div>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/Chart.js/Chart.min.js"></script>

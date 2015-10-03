@@ -3,7 +3,7 @@
  */
 var app = angular.module('app', ['tc.chartjs', 'ui.bootstrap']);
 
-app.controller('MeasCtrl', function($http){
+app.controller('MeasController', function($http){
    var app = this;
 
     $http.get('/api/meas').success(function(data){
