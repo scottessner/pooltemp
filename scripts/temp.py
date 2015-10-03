@@ -82,7 +82,7 @@ def build_meas(time, temp, weather):
     meas['local_epoch'] = datetime.datetime.isoformat(datetime.datetime.now())
     meas['h2o_temp'] = float(temp)
     meas['air_temp'] = float(weather['current_observation']['temp_f'])
-    meas['humidity'] = float(str.split(weather['current_observation']['relative_humidity'], sep='%')[0])
+    meas['humidity'] = float(str.split(str(weather['current_observation']['relative_humidity']),'%')[0])
     meas['wind_speed'] = float(weather['current_observation']['wind_mph'])
     meas['wind_gusts'] = float(weather['current_observation']['wind_gust_mph'])
     meas['wind_direction'] = int(weather['current_observation']['wind_degrees'])
@@ -92,7 +92,7 @@ def build_meas(time, temp, weather):
 
 
 def post_meas(meas):
-    r = requests.post('http://127.0.0.1:5000/api/meas', json=meas)
+    r = requests.post('http://127.0.0.1/api/meas', json=meas)
 
 temp = read_temp('f')
 weather_data = download_weather_data()
