@@ -5,7 +5,7 @@
     <title>Pool Temperature Monitor</title>
 </head>
 <body ng-app="app" ng-controller="MeasController as MeasCtrl">
-    {{ MeasCtrl.myvar }} {{ MeasCtrl.meas[0].h2o_temp }}
+    {{ MeasCtrl.myvar }} {{ MeasCtrl.current.local_epoch }}
     <div ng-repeat="m in MeasCtrl.meas">
         Title: {{ m.h2o_temp }}
         Time: {{ m.local_epoch }}
