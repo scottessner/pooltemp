@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>Pool Temperature Monitor</title>
 </head>
-<body ng-app="app" ng-controller="MeasController as meas">
-    {{"Test Text"}} {{ meas.meas[0].h2o_temp }}
-    <div ng-repeat="m in meas.meas">
+<body ng-app="app" ng-controller="MeasController as MeasCtrl">
+    {{"Test Text"}} {{ MeasCtrl.meas[0].h2o_temp }}
+    <div ng-repeat="m in MeasCtrl.meas">
         Title: {{ m.h2o_temp }}
     </div>
 <script src="bower_components/angular/angular.js"></script>
