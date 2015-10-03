@@ -1,26 +1,27 @@
-import datetime
 import glob
-import time
-import urllib3
+import datetime
 import json
+import requests
 
 meas_time = datetime.datetime.now()
 
-#base_dir = '/sys/bus/w1/devices/'
-#device_folder = glob.glob(base_dir + '28*')[0]
-#device_file = device_folder + '/w1_slave'
+base_dir = '/sys/bus/w1/devices/'
+device_folder = glob.glob(base_dir + '28*')[0]
+device_file = device_folder + '/w1_slave'
 
-#output_file = '/home/pi/temp_current'
-#output_history_file = '/home/pi/temp_history'
-#weather_file = '/home/pi/weather/'
-#web_page_file = '/home/pi/web/index.html'
+# output_file = '/home/pi/temp_current'
+# output_history_file = '/home/pi/temp_history'
+# weather_file = '/home/pi/weather/'
+# web_page_file = '/home/pi/web/index.html'
 
 weather_url = 'http://api.wunderground.com/api/809e2b2cd1463ea3/conditions/q/62022.json'
 
+
 def read_temp_raw():
     with open(device_file, 'r') as f:
-    	lines = f.readlines()
+        lines = f.readlines()
     return lines
+
 
 def read_temp(unit):
     lines = read_temp_raw()
@@ -29,7 +30,7 @@ def read_temp(unit):
         lines = read_temp_raw()
     equals_pos = lines[1].find('t=')
     if equals_pos != -1:
-        temp_string = lines[1][equals_pos+2:]
+        temp_string = lines[1][equals_pos + 2:]
         temp_c = float(temp_string) / 1000.0
         temp_f = temp_c * 9.0 / 5.0 + 32.0
         if unit == 'c':
@@ -39,43 +40,62 @@ def read_temp(unit):
         else:
             raise Exception("Unit must be c or f")
 
-def write_temp(t):
-    with open(output_file,'w') as f:
-    	f.write(meas_time.strftime('%D %H:%M') + ', ' + str(t) + '\n')
 
-def write_temp_history(t):
-    with open(output_history_file,'a') as f:
+def write_temp(t):
+    with open(output_file, 'w') as f:
         f.write(meas_time.strftime('%D %H:%M') + ', ' + str(t) + '\n')
 
+
+def write_temp_history(t):
+    with open(output_history_file, 'a') as f:
+        f.write(meas_time.strftime('%D %H:%M') + ', ' + str(t) + '\n')
+
+
 def update_web_page(temp, time):
-    with open(web_page_file,'w') as w:
+    with open(web_page_file, 'w') as w:
         w.writelines(['<html>',
-            '<head>',
-            '<title>Current Pool Temp</title>',
-            '</head>',
-            '<body bgcolor="white" text="black">',
-            '<center><h1>The Pool is currently ' + str(int(round(temp,0))) + ' degrees</h1></center>',
-            '<center><p>Last Updated at ' + time.strftime('%D %H:%M') + ' </p></center>',
-            '</body>',
-            '</html>'])
+                      '<head>',
+                      '<title>Current Pool Temp</title>',
+                      '</head>',
+                      '<body bgcolor="white" text="black">',
+                      '<center><h1>The Pool is currently ' + str(int(round(temp, 0))) + ' degrees</h1></center>',
+                      '<center><p>Last Updated at ' + time.strftime('%D %H:%M') + ' </p></center>',
+                      '</body>',
+                      '</html>'])
+
 
 def download_weather_data():
-    http = urllib3.PoolManager()
-    response = http.request('get',weather_url)
-    """:type : urllib3.HTTPResponse"""
+    r = requests.get(weather_url)
 
-    if(response.status == 200):
+    jason_data = ''
+
+    if r.status_code == 200:
         # file_name = weather_file + meas_time.strftime('%Y%m%d%H')
+        data = r.text
+        jason_data = json.loads(data)
 
-        data = response.data.decode('utf8')
-        jdata = json.loads(data)
-        pass
-        # with open(file_name,'a') as f:
-        #    f.write(str(data))
+    return jason_data
 
-#temp = read_temp('f')
-#temp = round(temp,1)
-#write_temp(temp)
-#write_temp_history(temp)
-download_weather_data()
-#update_web_page(temp,meas_time)
+
+def build_meas(time, temp, weather):
+    meas = dict()
+    meas['local_epoch'] = datetime.datetime.isoformat(datetime.datetime.now())
+    meas['h2o_temp'] = float(temp)
+    meas['air_temp'] = float(weather['current_observation']['temp_f'])
+    meas['humidity'] = float(str.split(weather['current_observation']['relative_humidity'], sep='%')[0])
+    meas['wind_speed'] = float(weather['current_observation']['wind_mph'])
+    meas['wind_gusts'] = float(weather['current_observation']['wind_gust_mph'])
+    meas['wind_direction'] = int(weather['current_observation']['wind_degrees'])
+    meas['precipitation'] = float(weather['current_observation']['precip_1hr_in'])
+    meas['pressure'] = float(weather['current_observation']['pressure_in'])
+    return meas
+
+
+def post_meas(meas):
+    r = requests.post('http://127.0.0.1:5000/api/meas', json=meas)
+
+temp = read_temp('f')
+weather_data = download_weather_data()
+meas_dict = build_meas(meas_time, temp, weather_data)
+post_meas(meas_dict)
+

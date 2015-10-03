@@ -11,13 +11,16 @@ db = SQLAlchemy(app)
 
 class Meas(db.Model):
     id = Column(Integer, primary_key=True)
-    taken = Column(DateTime, unique=False)
+    local_epoch = Column(DateTime, unique=False)
     h2o_temp = Column(Float, unique=False)
     air_temp = Column(Float, unique=False)
     humidity = Column(Float, unique=False)
     wind_speed = Column(Float, unique=False)
+    wind_gusts = Column(Float, unique=False)
     wind_direction = Column(Integer, unique=False)
-    press = Column(Float, unique=False)
+    precipitation = Column(Float, unique=False)
+    humidity = Column(Integer, unique=False)
+    pressure = Column(Float, unique=False)
 
 api_manager = APIManager(app, flask_sqlalchemy_db=db)
 api_manager.create_api(Meas, methods=['GET', 'POST', 'DELETE', 'PUT'])
