@@ -5,7 +5,7 @@
     <title>Pool Temperature Monitor</title>
 </head>
 <body ng-app="app" ng-controller="MeasController as meas">
-    Test Text {{ meas.meas[0].h2o_temp }}
+    {{"Test Text"}} {{ meas.meas[0].h2o_temp }}
     <div ng-repeat="m in meas.meas">
         Title: {{ m.h2o_temp }}
     </div>
