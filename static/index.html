@@ -5,6 +5,7 @@
     <title>Pool Temperature Monitor</title>
 </head>
 <body ng-app="app" ng-controller="MeasController as MeasCtrl">
+    <h1 ng-controller = "MeasController">Latest Measurement at {{ latest.local_epoch | date:'shortTime' }}</h1>
     <div class="col-md-6">
         <table class="table">
             <th>Time</th>
@@ -14,7 +15,7 @@
             <th>Wind Direction</th>
             <th>Wind Gusts</th>
             <th>Precipitation</th>
-            <tr ng-repeat="m in MeasCtrl.meas | orderBy:'-local_epoch'">
+            <tr ng-repeat="m in meas">
                 <td class="col-md-3">{{ m.local_epoch | date:'short' }}</td>
                 <td>{{ m.h2o_temp | number:1}}</td>
                 <td>{{ m.air_temp }}</td>
