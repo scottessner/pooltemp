@@ -5,11 +5,12 @@
 var app = angular.module('app', ['tc.chartjs', 'ui.bootstrap']);
 
     app.controller('MeasController', function($http) {
-        this.myvar = 'Hi World!';
+        var app = this;
+        app.myvar = 'Hi World!';
 
 
         $http.get('/api/meas').success(function (data) {
-            this.meas = data.objects;
+            app.meas = data.objects;
         });
     });
 
