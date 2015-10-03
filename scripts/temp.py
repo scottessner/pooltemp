@@ -77,9 +77,9 @@ def download_weather_data():
     return jason_data
 
 
-def build_meas(time, temp, weather):
+def build_meas(meas_time, temp, weather):
     meas = dict()
-    meas['local_epoch'] = datetime.datetime.isoformat(datetime.datetime.now())
+    meas['local_epoch'] = datetime.datetime.isoformat(meas_time)
     meas['h2o_temp'] = float(temp)
     meas['air_temp'] = float(weather['current_observation']['temp_f'])
     meas['humidity'] = float(str.split(str(weather['current_observation']['relative_humidity']),'%')[0])
@@ -97,5 +97,6 @@ def post_meas(meas):
 temp = read_temp('f')
 weather_data = download_weather_data()
 meas_dict = build_meas(meas_time, temp, weather_data)
+
 post_meas(meas_dict)
 
