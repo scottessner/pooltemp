@@ -16,7 +16,7 @@
             <th>Precipitation</th>
             <tr ng-repeat="m in MeasCtrl.meas | orderBy:'-local_epoch'">
                 <td class="col-md-3">{{ m.local_epoch | date:'short' }}</td>
-                <td>{{ m.h2o_temp }}</td>
+                <td>{{ m.h2o_temp | number:1}}</td>
                 <td>{{ m.air_temp }}</td>
                 <td>{{ m.wind_speed }}</td>
                 <td>{{ m.wind_direction }}</td>
