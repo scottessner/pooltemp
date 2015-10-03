@@ -9,7 +9,7 @@ var app = angular.module('app', ['tc.chartjs', 'ui.bootstrap']);
         app.myvar = 'Hi World!';
 
 
-        $http.get('/api/meas').success(function (data) {
+        $http.get('/api/meas').success(function (data, $filter) {
             app.meas = data.objects;
             app.current = $filter('orderBy')(app.meas,'-local_epoch')[this.data.length-1].local_epoch ;
         });
