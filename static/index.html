@@ -5,22 +5,26 @@
     <title>Pool Temperature Monitor</title>
 </head>
 <body ng-app="app" ng-controller="MeasController as MeasCtrl">
-<div class="col-md-6">
-<table class="table">
-        <th>Time</th>
-        <th>Water Temp</th>
-        <th>Air Temp</th>
-        <th>Wind Speed</th>
-        <th>Wind Direction</th>
-    <tr ng-repeat="m in MeasCtrl.meas">
-            <td>{{ m.local_epoch }}</td>
-            <td>{{ m.h2o_temp }}</td>
-            <td>{{ m.air_temp }}</td>
-            <td>{{ m.wind_speed }}</td>
-            <td>{{ m.wind_direction }}</td>
-    </tr>
-</table>
-</div>
+    <div class="col-md-6">
+        <table class="table">
+            <th>Time</th>
+            <th>Water Temp</th>
+            <th>Air Temp</th>
+            <th>Wind Speed</th>
+            <th>Wind Direction</th>
+            <th>Wind Gusts</th>
+            <th>Precipitation</th>
+            <tr ng-repeat="m in MeasCtrl.meas | orderBy:'-local_epoch'">
+                <td class="col-md-3">{{ m.local_epoch | date:'short' }}</td>
+                <td>{{ m.h2o_temp }}</td>
+                <td>{{ m.air_temp }}</td>
+                <td>{{ m.wind_speed }}</td>
+                <td>{{ m.wind_direction }}</td>
+                <td>{{ m.wind_gusts }}</td>
+                <td>{{ m.precipitation }}</td>
+            </tr>
+        </table>
+    </div>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/Chart.js/Chart.min.js"></script>
 <script src="bower_components/tc-angular-chartjs/dist/tc-angular-chartjs.min.js"></script>
