@@ -11,7 +11,7 @@ var app = angular.module('app', ['tc.chartjs', 'ui.bootstrap']);
 
         $http.get('/api/meas').success(function (data, $filter) {
             app.meas = data.objects;
-            app.current = $filter('orderBy')(app.meas,'-local_epoch')[this.data.length-1].local_epoch ;
+            //app.current = $filter('orderBy')(app.meas,'-local_epoch')[this.data.length-1].local_epoch ;
         });
     });
 
