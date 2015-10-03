@@ -8,6 +8,7 @@
     {{ MeasCtrl.myvar }} {{ MeasCtrl.meas[0].h2o_temp }}
     <div ng-repeat="m in MeasCtrl.meas">
         Title: {{ m.h2o_temp }}
+        Time: {{ m.local_epoch }}
     </div>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/Chart.js/Chart.min.js"></script>
