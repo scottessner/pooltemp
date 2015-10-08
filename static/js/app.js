@@ -8,7 +8,7 @@
         var mctl = this;
         mctl.readings = [];
 
-        var order_param = '"q":{"order_by":[ {"field": "local_epoch", "direction": "desc"}]}'
+        var order_param = {"q":{"order_by":[ {"field": "local_epoch", "direction": "desc"}]}};
 
         $http.get('/api/meas', {params: order_param}).success(function (data) {
             mctl.readings = data.objects;

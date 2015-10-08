@@ -5,7 +5,7 @@
     <title>Pool Temperature Monitor</title>
 </head>
 <body ng-app="app" ng-controller="MeasController as MeasCtrl">
-    <h1>Latest Measurement at {{ MeasCtrl.latest.local_epoch }} or {{ (MeasCtrl.readings | orderBy:'-local_epoch')[0].local_epoch | date:'shortTime' }}</h1>
+    <h1>Latest Measurement at {{ MeasCtrl.readings[0].local_epoch | date:'shortTime' }}</h1>
     <meas-table class="col-md-6 col-sm-3"></meas-table>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/Chart.js/Chart.min.js"></script>
