@@ -6,16 +6,14 @@
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
     <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css"/>
     <link rel="stylesheet" href="assets/app.css"/></head>
-<body class="layout-column" ng-app="app" ng-controller="MeasController as MeasCtrl" ng-cloak>
-    <md-toolbar>
-        <div>
-            <h1 class="md-display-3" layout-padding>Pool Temperature Monitor</h1>
-        </div>
-    </md-toolbar>
+<body ng-app="app" ng-controller="MeasController as MeasCtrl" ng-cloak>
+        <md-toolbar layout="column" >
+            <h1 class="md-display-3 md-primary" md-theme-blue layout-padding>Pool Temperature Monitor</h1>
+        </md-toolbar>
         <md-tabs md-dynamic-height md-border-bottom md-theme-blue class="md-primary">
             <md-tab label="Current">
                 <md-content class="md-padding">
-                    <h1 class="md-display-2" layout-padding>The pool is currently {{ latest.h2o_temp | number:0 }} degrees.</h1>
+                    <h1>The pool is currently {{ latest.h2o_temp | number:0 }} degrees.</h1>
                 </md-content>
             </md-tab>
             <md-tab label="Recent Readings">
