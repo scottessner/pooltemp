@@ -2,19 +2,27 @@
  * Created by ssessner on 9/23/2015.
  */
 (function() {
-    var app = angular.module('app', ['tc.chartjs', 'ui.bootstrap']);
+    var app = angular.module('app', ['tc.chartjs', 'ngMaterial'])
 
-    app.controller('MeasController', ['$http', function ($http) {
+    app.controller('MeasController', ['$http', '$scope', function ($http, $scope) {
         var mctl = this;
-        mctl.readings = [];
+        $scope.readings = [];
 
         var order_param = {"q":{"order_by":[ {"field": "local_epoch", "direction": "desc"}]}};
 
         $http.get('/api/meas', {params: order_param}).success(function (data) {
-            mctl.readings = data.objects;
+            $scope.readings = data.objects;
+            $scope.latest = $scope.readings[0];
         });
 
-        mctl.latest = mctl.readings[0];
+        $scope.shown = 0;
+
+        this.showTable = function(){
+            if($scope.shown)
+                $scope.shown = 0;
+            else
+                $scope.shown = 1;
+        };
 
     }]);
 
@@ -23,7 +31,12 @@
             restrict: 'E',
             templateUrl: 'elements/meas-table.html'
 
-        }
-     });
+        };
+    });
+
+    app.config(function($mdThemingProvider){
+       $mdThemingProvider.theme('default')
+           .primaryPalette('blue');
+    });
 
 })();

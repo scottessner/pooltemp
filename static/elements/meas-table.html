@@ -1,4 +1,4 @@
-<table class="table">
+<table>
     <th>Time</th>
     <th>Water Temp</th>
     <th>Air Temp</th>
@@ -6,8 +6,8 @@
     <th>Wind Direction</th>
     <th>Wind Gusts</th>
     <th>Precipitation</th>
-    <tr ng-repeat="m in MeasCtrl.readings | orderBy: '-local_epoch'">
-        <td class="col-md-3">{{ m.local_epoch | date:'short' }}</td>
+    <tr ng-repeat="m in readings | orderBy: '-local_epoch'">
+        <td>{{ m.local_epoch | date:'short' }}</td>
         <td>{{ m.h2o_temp | number:1}}</td>
         <td>{{ m.air_temp }}</td>
         <td>{{ m.wind_speed }}</td>

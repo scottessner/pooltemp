@@ -3,15 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Pool Temperature Monitor</title>
-</head>
-<body ng-app="app" ng-controller="MeasController as MeasCtrl">
-    <h1>Latest Measurement at {{ MeasCtrl.readings[0].local_epoch | date:'shortTime' }}</h1>
-    <meas-table class="col-md-6 col-sm-12"></meas-table>
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/Chart.js/Chart.min.js"></script>
-<script src="bower_components/tc-angular-chartjs/dist/tc-angular-chartjs.min.js"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-<script src="js/app.js"></script>
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="assets/app.css"/></head>
+<body class="layout-column" ng-app="app" ng-controller="MeasController as MeasCtrl" ng-cloak>
+    <md-toolbar>
+        <div>
+            <h1 class="md-display-3" layout-padding>Pool Temperature Monitor</h1>
+        </div>
+    </md-toolbar>
+        <md-tabs md-dynamic-height md-border-bottom md-theme-blue class="md-primary">
+            <md-tab label="Current">
+                <md-content class="md-padding">
+                    <h1 class="md-display-2" layout-padding>The pool is currently {{ latest.h2o_temp | number:0 }} degrees.</h1>
+                </md-content>
+            </md-tab>
+            <md-tab label="Recent Readings">
+            <md-content flex layout-padding>
+                <meas-table class="md-padding"></meas-table>
+            </md-content>
+            </md-tab>
+        </md-tabs>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+    <script src="bower_components/Chart.js/Chart.min.js"></script>
+    <script src="bower_components/tc-angular-chartjs/dist/tc-angular-chartjs.min.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
