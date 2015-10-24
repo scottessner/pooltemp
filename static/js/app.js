@@ -30,7 +30,9 @@
             });
         };
 
-        $scope.load(current_param);
+        $scope.loadCurrent = function(){
+            $scope.load(current_param);
+        }
 
         $scope.loadHistory = function(){
             $scope.load(history_param);
