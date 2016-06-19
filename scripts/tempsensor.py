@@ -42,7 +42,7 @@ channel = connection.channel()
 channel.queue_declare(queue='pool')
 
 message = str(temp)
-channel.basic_publish(exchange='amq.fanout',
+channel.basic_publish(exchange='pool.fanout',
                       routing_key='temperature',
                       body=message
                       )
