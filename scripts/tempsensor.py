@@ -1,11 +1,11 @@
 import glob
-import datetime
+from datetime import datetime, tzinfo, timedelta
 import pika
 import time
 import json
 
 status = dict()
-status['time'] = datetime.datetime.now()
+status['time'] = datetime.utcnow().isoformat() + 'Z'
 
 base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
