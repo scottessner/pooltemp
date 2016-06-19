@@ -2,6 +2,7 @@ import glob
 import datetime
 import json
 import requests
+import pika
 
 meas_time = datetime.datetime.now()
 
@@ -95,6 +96,14 @@ def post_meas(meas):
     r = requests.post('http://127.0.0.1/api/meas', json=meas)
 
 temp = read_temp('f')
+
+creds = pika.PlainCredentials('charger', 'charger')
+connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1', credentials=creds))
+channel = connection.channel()
+
+channel.queue_declare(queue='batt')
+
+
 weather_data = download_weather_data()
 meas_dict = build_meas(meas_time, temp, weather_data)
 

@@ -26,7 +26,7 @@
 
             $http.get('/api/meas', {params: params}).success(function (data) {
                 $scope.readings = data.objects;
-                $scope.current = $scope.readings[0];
+                $scope.current = $scope.readings[0];zg
             });
         };
 

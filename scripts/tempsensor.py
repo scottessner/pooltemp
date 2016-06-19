@@ -36,7 +36,7 @@ def read_temp(unit):
 temp = read_temp('f')
 
 creds = pika.PlainCredentials('pooltemp', 'pooltemp')
-connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1', credentials=creds))
+connection = pika.BlockingConnection(pika.ConnectionParameters('ssessner.com', credentials=creds))
 channel = connection.channel()
 
 channel.queue_declare(queue='pool')
