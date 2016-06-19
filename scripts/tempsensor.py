@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 import glob
 from datetime import datetime, tzinfo, timedelta
 import pika
@@ -43,7 +45,7 @@ channel = connection.channel()
 
 channel.queue_declare(queue='pool')
 
-message = json.dumps(status)
+message = json.dumps(status, sort_keys=True)
 
 channel.basic_publish(exchange='pool.fanout',
                       routing_key='temperature',
