@@ -2,8 +2,10 @@ import glob
 import datetime
 import pika
 import time
+import json
 
-meas_time = datetime.datetime.now()
+status = dict()
+status['time'] = datetime.datetime.now()
 
 base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
@@ -33,7 +35,7 @@ def read_temp(unit):
         else:
             raise Exception("Unit must be c or f")
 
-temp = read_temp('f')
+status['temp'] = read_temp('f')
 
 creds = pika.PlainCredentials('pooltemp', 'pooltemp')
 connection = pika.BlockingConnection(pika.ConnectionParameters('ssessner.com', credentials=creds))
@@ -41,7 +43,8 @@ channel = connection.channel()
 
 channel.queue_declare(queue='pool')
 
-message = str(temp)
+message = json.dumps(status)
+
 channel.basic_publish(exchange='pool.fanout',
                       routing_key='temperature',
                       body=message
