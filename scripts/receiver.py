@@ -11,7 +11,7 @@ channel = connection.channel()
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
 
-channel.queue_bind(exchange='pool.fanout',
+channel.queue_bind(exchange='amq.fanout',
                    routing_key='temperature',
                    queue=queue_name)
 
