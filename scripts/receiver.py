@@ -1,5 +1,10 @@
 
 import pika
+import json
+import datetime
+import dateutil.parser
+import dateutil.tz
+
 creds = pika.PlainCredentials('pooltemp', 'pooltemp')
 connection = pika.BlockingConnection(pika.ConnectionParameters('ssessner.com', credentials=creds))
 
@@ -17,7 +22,11 @@ channel.queue_bind(exchange='pool.fanout',
 
 
 def callback(ch, method, properties, body):
-    print('Received {0}'.format(body))
+    status = json.loads(body)
+
+    time = dateutil.parser.parse(status['time']).replace(tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal())
+    temp = float(status['temp'])
+    print('At {0} the pool was {1} degrees.'.format(time, temp))
 
 channel.basic_consume(callback,
                       queue=queue_name,
