@@ -5,6 +5,7 @@ import pika
 import dateutil.parser
 
 next_time = None
+time_increment = 5
 weather_url = 'http://api.wunderground.com/api/809e2b2cd1463ea3/conditions/q/62022.json'
 
 creds = pika.PlainCredentials('pooltemp', 'pooltemp')
@@ -26,9 +27,10 @@ def next_measurement_time():
                                        month=now.month,
                                        day=now.day,
                                        hour=now.hour,
+                                       minute=now.minute//time_increment,
                                        tzinfo=dateutil.tz.tzutc())
 
-    next_meas_time += datetime.timedelta(hours=1)
+    next_meas_time += datetime.timedelta(minutes=time_increment)
     print('Next measurement will be at {0}'.format(next_meas_time
                                                    .astimezone(dateutil.tz.tzlocal())
                                                    .strftime("%Y-%m-%d %H:%M")))
@@ -64,6 +66,10 @@ def build_meas(meas_time, temp, weather):
 
 def post_meas(meas):
     r = requests.post('http://pool.ssessner.com/api/meas', json=meas)
+    if r.status_code == 200:
+        print('Measurement logged successfully')
+    else:
+        print('Measurement failed to log')
 
 
 def callback(ch, method, properties, body):
@@ -79,6 +85,7 @@ def callback(ch, method, properties, body):
                                       month=time.month,
                                       day=time.day,
                                       hour=time.hour,
+                                      minute=time.minute//time_increment,
                                       tzinfo=dateutil.tz.tzutc())
 
         weather_data = download_weather_data()
