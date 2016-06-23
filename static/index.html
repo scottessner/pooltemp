@@ -16,7 +16,7 @@
         <md-tabs md-dynamic-height md-border-bottom md-theme-blue class="md-primary">
             <md-tab label="Current" md-on-select="loadCurrent()">
                 <md-content class="md-padding">
-                    <h1>The pool is currently {{ current.h2o_temp | number:0 }} degrees.</h1>
+                    <h1>The pool is currently {{ current.h2o_temp | number:1 }} degrees.</h1>
 		    <p>Last updated at {{ current.local_epoch+'Z' | date:'short' }}</p>
                 </md-content>
             </md-tab>
