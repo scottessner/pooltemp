@@ -5,7 +5,7 @@ from sqlalchemy.sql.schema import ForeignKey, Column
 from sqlalchemy.sql.sqltypes import Integer, Text, Float, DateTime
 
 app = Flask(__name__, static_url_path='')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pooltemp.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////pooltemp.db'
 db = SQLAlchemy(app)
 
 
