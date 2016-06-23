@@ -66,7 +66,8 @@ def build_meas(meas_time, temp, weather):
 
 
 def post_meas(meas):
-    r = requests.post('http://pool.ssessner.com/api/meas', json=meas)
+    headers = {'Content-Type': 'application/json'}
+    r = requests.post('http://pool.ssessner.com/api/meas', json=meas, headers=headers)
     if r.status_code == 200:
         print('Measurement logged successfully')
     else:
