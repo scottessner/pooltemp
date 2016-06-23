@@ -3,6 +3,7 @@ import json
 import requests
 import pika
 import dateutil.parser
+import dateutil.tz
 
 next_time = None
 time_increment = 5
@@ -52,10 +53,10 @@ def download_weather_data():
 
 def build_meas(meas_time, temp, weather):
     meas = dict()
-    meas['local_epoch'] = datetime.datetime.isoformat(meas_time)
+    meas['local_epoch'] = datetime.datetime.isoformat(meas_time) + 'Z'
     meas['h2o_temp'] = float(temp)
     meas['air_temp'] = float(weather['current_observation']['temp_f'])
-    meas['humidity'] = float(str.split(str(weather['current_observation']['relative_humidity']),'%')[0])
+    meas['humidity'] = float(str.split(str(weather['current_observation']['relative_humidity']), '%')[0])
     meas['wind_speed'] = float(weather['current_observation']['wind_mph'])
     meas['wind_gusts'] = float(weather['current_observation']['wind_gust_mph'])
     meas['wind_direction'] = int(weather['current_observation']['wind_degrees'])
@@ -85,13 +86,13 @@ def callback(ch, method, properties, body):
                                       month=time.month,
                                       day=time.day,
                                       hour=time.hour,
-                                      minute=time.minute//time_increment,
+                                      minute=time.minute - time.minute % time_increment,
                                       tzinfo=dateutil.tz.tzutc())
 
         weather_data = download_weather_data()
         meas_dict = build_meas(meas_time, temp, weather_data)
 
-        # post_meas(meas_dict)
+        post_meas(meas_dict)
 
         next_time = next_measurement_time()
 

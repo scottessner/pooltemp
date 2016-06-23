@@ -1,6 +1,6 @@
 from flask import Flask
-from flask.ext.restless.manager import APIManager
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_restless import APIManager
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.schema import ForeignKey, Column
 from sqlalchemy.sql.sqltypes import Integer, Text, Float, DateTime
 
