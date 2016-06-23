@@ -11,7 +11,7 @@ db = SQLAlchemy(app)
 
 class Meas(db.Model):
     id = Column(Integer, primary_key=True)
-    local_epoch = Column(DateTime, unique=False)
+    local_epoch = Column(DateTime(timezone=True), unique=False)
     h2o_temp = Column(Float, unique=False)
     air_temp = Column(Float, unique=False)
     humidity = Column(Float, unique=False)
