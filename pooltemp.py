@@ -5,13 +5,13 @@ from sqlalchemy.sql.schema import ForeignKey, Column
 from sqlalchemy.sql.sqltypes import Integer, Text, Float, DateTime
 
 app = Flask(__name__, static_url_path='')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////pooltemp.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pooltemp.db'
 db = SQLAlchemy(app)
 
 
 class Meas(db.Model):
     id = Column(Integer, primary_key=True)
-    local_epoch = Column(DateTime(timezone=True), unique=False)
+    local_epoch = Column(DateTime(timezone=True), unique=True)
     h2o_temp = Column(Float, unique=False)
     air_temp = Column(Float, unique=False)
     humidity = Column(Float, unique=False)

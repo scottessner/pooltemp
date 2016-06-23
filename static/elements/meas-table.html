@@ -7,7 +7,7 @@
     <th>Wind Gusts</th>
     <th>Precipitation</th>
     <tr ng-repeat="m in readings | orderBy: '-local_epoch'">
-        <td>{{ m.local_epoch | date:'short' | timezone }}</td>
+        <td>{{ m.local_epoch+'Z' | date:'short' }}</td>
         <td>{{ m.h2o_temp | number:1}}</td>
         <td>{{ m.air_temp }}</td>
         <td>{{ m.wind_speed }}</td>

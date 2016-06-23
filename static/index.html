@@ -17,6 +17,7 @@
             <md-tab label="Current" md-on-select="loadCurrent()">
                 <md-content class="md-padding">
                     <h1>The pool is currently {{ current.h2o_temp | number:0 }} degrees.</h1>
+		    <p>Last updated at {{ current.local_epoch+'Z' | date:'short' }}</p>
                 </md-content>
             </md-tab>
             <md-tab label="Recent Readings" md-on-select="loadHistory()">
