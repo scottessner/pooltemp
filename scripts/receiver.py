@@ -22,11 +22,11 @@ channel.queue_bind(exchange='pool.fanout',
 
 
 def callback(ch, method, properties, body):
-    status = json.loads(body)
+    status = json.loads(body.decode("utf-8"))
 
     time = dateutil.parser.parse(status['time']).replace(tzinfo=dateutil.tz.tzutc()).astimezone(dateutil.tz.tzlocal())
     temp = float(status['temp'])
-    print('At {0} the pool was {1} degrees.'.format(time, temp))
+    print('At {0} the pool was {1} degrees.'.format(time.strftime("%Y-%m-%d %H:%M"), temp))
 
 channel.basic_consume(callback,
                       queue=queue_name,

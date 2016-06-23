@@ -1,68 +1,38 @@
-import glob
 import datetime
 import json
 import requests
 import pika
+import dateutil.parser
 
-meas_time = datetime.datetime.now()
-
-base_dir = '/sys/bus/w1/devices/'
-device_folder = glob.glob(base_dir + '28*')[0]
-device_file = device_folder + '/w1_slave'
-
-# output_file = '/home/pi/temp_current'
-# output_history_file = '/home/pi/temp_history'
-# weather_file = '/home/pi/weather/'
-# web_page_file = '/home/pi/web/index.html'
-
+next_time = None
 weather_url = 'http://api.wunderground.com/api/809e2b2cd1463ea3/conditions/q/62022.json'
 
+creds = pika.PlainCredentials('pooltemp', 'pooltemp')
+connection = pika.BlockingConnection(pika.ConnectionParameters('ssessner.com', credentials=creds))
 
-def read_temp_raw():
-    with open(device_file, 'r') as f:
-        lines = f.readlines()
-    return lines
+channel = connection.channel()
 
+result = channel.queue_declare(exclusive=True)
+queue_name = result.method.queue
 
-def read_temp(unit):
-    lines = read_temp_raw()
-    while lines[0].strip()[-3:] != 'YES':
-        time.sleep(0.2)
-        lines = read_temp_raw()
-    equals_pos = lines[1].find('t=')
-    if equals_pos != -1:
-        temp_string = lines[1][equals_pos + 2:]
-        temp_c = float(temp_string) / 1000.0
-        temp_f = temp_c * 9.0 / 5.0 + 32.0
-        if unit == 'c':
-            return temp_c
-        elif unit == 'f':
-            return temp_f
-        else:
-            raise Exception("Unit must be c or f")
+channel.queue_bind(exchange='pool.fanout',
+                   routing_key='temperature',
+                   queue=queue_name)
 
 
-def write_temp(t):
-    with open(output_file, 'w') as f:
-        f.write(meas_time.strftime('%D %H:%M') + ', ' + str(t) + '\n')
+def next_measurement_time():
+    now = datetime.datetime.utcnow()
+    next_meas_time = datetime.datetime(year=now.year,
+                                       month=now.month,
+                                       day=now.day,
+                                       hour=now.hour,
+                                       tzinfo=dateutil.tz.tzutc())
 
-
-def write_temp_history(t):
-    with open(output_history_file, 'a') as f:
-        f.write(meas_time.strftime('%D %H:%M') + ', ' + str(t) + '\n')
-
-
-def update_web_page(temp, time):
-    with open(web_page_file, 'w') as w:
-        w.writelines(['<html>',
-                      '<head>',
-                      '<title>Current Pool Temp</title>',
-                      '</head>',
-                      '<body bgcolor="white" text="black">',
-                      '<center><h1>The Pool is currently ' + str(int(round(temp, 0))) + ' degrees</h1></center>',
-                      '<center><p>Last Updated at ' + time.strftime('%D %H:%M') + ' </p></center>',
-                      '</body>',
-                      '</html>'])
+    next_meas_time += datetime.timedelta(hours=1)
+    print('Next measurement will be at {0}'.format(next_meas_time
+                                                   .astimezone(dateutil.tz.tzlocal())
+                                                   .strftime("%Y-%m-%d %H:%M")))
+    return next_meas_time
 
 
 def download_weather_data():
@@ -93,19 +63,44 @@ def build_meas(meas_time, temp, weather):
 
 
 def post_meas(meas):
-    r = requests.post('http://127.0.0.1/api/meas', json=meas)
-
-temp = read_temp('f')
-
-creds = pika.PlainCredentials('charger', 'charger')
-connection = pika.BlockingConnection(pika.ConnectionParameters('127.0.0.1', credentials=creds))
-channel = connection.channel()
-
-channel.queue_declare(queue='batt')
+    r = requests.post('http://pool.ssessner.com/api/meas', json=meas)
 
 
-weather_data = download_weather_data()
-meas_dict = build_meas(meas_time, temp, weather_data)
+def callback(ch, method, properties, body):
+    status = json.loads(body.decode("utf-8"))
 
-post_meas(meas_dict)
+    global next_time
+    time = dateutil.parser.parse(status['time'])
+    temp = float(status['temp'])
+
+    if time >= next_time:
+        print('Logging')
+        meas_time = datetime.datetime(year=time.year,
+                                      month=time.month,
+                                      day=time.day,
+                                      hour=time.hour,
+                                      tzinfo=dateutil.tz.tzutc())
+
+        weather_data = download_weather_data()
+        meas_dict = build_meas(meas_time, temp, weather_data)
+
+        # post_meas(meas_dict)
+
+        next_time = next_measurement_time()
+
+    print('At {0} the pool was {1} degrees.'.format(time
+                                                    .astimezone(dateutil.tz.tzlocal())
+                                                    .strftime("%Y-%m-%d %H:%M"), temp))
+
+
+next_time = next_measurement_time()
+
+channel.basic_consume(callback,
+                      queue=queue_name,
+                      no_ack=True)
+
+channel.start_consuming()
+
+
+
 
