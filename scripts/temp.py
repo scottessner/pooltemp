@@ -53,7 +53,7 @@ def download_weather_data():
 
 def build_meas(meas_time, temp, weather):
     meas = dict()
-    meas['local_epoch'] = datetime.datetime.isoformat(meas_time) + 'Z'
+    meas['local_epoch'] = datetime.datetime.isoformat(meas_time)
     meas['h2o_temp'] = float(temp)
     meas['air_temp'] = float(weather['current_observation']['temp_f'])
     meas['humidity'] = float(str.split(str(weather['current_observation']['relative_humidity']), '%')[0])
@@ -68,7 +68,7 @@ def build_meas(meas_time, temp, weather):
 def post_meas(meas):
     headers = {'Content-Type': 'application/json'}
     r = requests.post('http://pool.ssessner.com/api/meas', json=meas, headers=headers)
-    if r.status_code == 200:
+    if r.status_code == 201:
         print('Measurement logged successfully')
     else:
         print('Measurement failed to log')
