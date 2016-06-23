@@ -27,7 +27,7 @@ def next_measurement_time():
                                        month=now.month,
                                        day=now.day,
                                        hour=now.hour,
-                                       minute=now.minute//time_increment,
+                                       minute=now.minute-now.minute%time_increment,
                                        tzinfo=dateutil.tz.tzutc())
 
     next_meas_time += datetime.timedelta(minutes=time_increment)
